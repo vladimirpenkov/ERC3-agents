@@ -1,0 +1,8 @@
+# Force LF for shell scripts
+*.sh text eol=lf
+
+# Force LF for Python files
+*.py text eol=lf
+
+# Auto detect text files and normalize to LF
+* text=auto eol=lf

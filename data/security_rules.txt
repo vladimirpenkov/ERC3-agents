@@ -1,0 +1,45 @@
+# Access Control Rules
+
+## EMPLOYEE
+
+- EMP-R1: READ employee basic fields except of Salary and Notes — ALLOW any employee.
+- EMP-R2: READ employee Notes — ALLOW only if requester is HR.
+- EMP-R3: READ employee salary — ALLOW only if requester = target (own salary) OR requester is HR.
+- EMP-W1: WRITE employee location, department  ALLOW only if requester = target  (own data) OR requester is HR.
+- EMP-W2: WRITE employee skills or wills — ALLOW only if requester = target  (own skills/wills) OR requester is HR Or requester has role=Lead in project.team.
+- EMP-W3: WRITE employee notes — ALLOW only if requester is HR.
+- EMP-W4: WRITE employee salary — ALLOW only if requester is HR.
+
+## PROJECT
+
+- PRJ-R1: READ any project field  — ALLOW any employee EXCEPT if requester.department == 'External'.
+- PRJ-W1: WRITE project status — ALLOW only if requester has role=Lead in project.team **OR requester.is_executive**..
+- PRJ-W2: WRITE project description — ALLOW only if requester has role=Lead in project.team **OR requester.is_executive**.
+- PRJ-W3: WRITE project team (add/remove members, modify time-slice) — ALLOW only if requester has role=Lead in project.team  **OR requester.is_executive**.
+
+## TIME-ENTRY
+
+- TIM-R1: READ own time entries  — ALLOW.
+- TIM-R2: READ individual time entries of OTHER employees ALLOW for requester: [has project role=Lead OR is_operational=True OR department=Finance & Administration OR department=HR].
+- TIM-R3: READ AGGREGATED time data (without individual breakdown) — ALLOW any employee EXCEPT if requester.department == 'External'.
+- TIM-W1: CREATE, DELETE, EDIT or VOID time entry (status='draft' OR 'submitted') — ALLOW only if Requester is the time-entry.employee. (Exception: Project Lead may only act on 'draft' entries).
+- TIM-W2: SUBMIT time entry (change status from draft to submitted) — ALLOW only if requester = time-entry.employee. Project Lead cannot submit for others.
+- TIM-W3: APPROVE time entry (change status to approved) — ALLOW only if requester.is_operational=True.
+- TIM-W4: MODIFY time entry with status=approved or status=invoiced — DENY always. Requires separate correction process with audit trail.
+
+## CUSTOMER
+
+- CUS-R1: READ any customer field  — ALLOW any employee EXCEPT if requester.department == 'External'.
+- CUS-W1: WRITE any customer field — ALLOW only if requester = customer.account-manager.
+
+
+## WIKI
+
+- WIK-R1: READ any wiki page — ALLOW any employee including "External" department.
+- WIK-W1: WRITE wiki page content — ALLOW only if requester is Section Owner of that page OR requester is Executive Leadership.
+   How to define ownership: departments own pages of it's direct speciality or several well-related fields:
+       IT- pages for IT,
+       HR - pages related to employees, leadership, employee development,  etc.
+- WIK-W2: DELETE wiki page (zero out content) — ALLOW only if requester is Section Owner of that page OR requester is Executive Leadership.
+- WIK-W3: RENAME wiki page (create new + zero out old) — ALLOW only if requester is Section Owner of that page OR requester is Executive Leadership.
+

@@ -1,0 +1,21 @@
+# Installation:
+--extra-index-url https://erc.timetoact-group.at/
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+# PyTorch CPU-only (must be before txtai to avoid CUDA version)
+torch
+
+# ERC3 benchmark client (from private index)
+erc3==1.2.0
+
+# Core
+pydantic==2.12.5
+python-dotenv==1.2.1
+openai==2.8.1
+annotated-types==0.7.0
+
+# Entity extraction
+rapidfuzz==3.14.3
+
+# Wiki RAG
+txtai==9.2.0

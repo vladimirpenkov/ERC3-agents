@@ -1,0 +1,30 @@
+[
+  {
+    "location": "HQ – Italy",
+    "synonyms": ["Milan", "Milano", "Bergamo", "Italy Factory", "Headquarters"]
+  },
+  {
+    "location": "Serbian Plant",
+    "synonyms": ["Novi Sad", "Serbia", "Balkans Factory", "Нови Сад"]
+  },
+  {
+    "location": "Vienna Office – Austria",
+    "synonyms": ["Vienna", "Wien", "Austria"]
+  },
+  {
+    "location": "Munich Office – Germany",
+    "synonyms": ["Munich", "München", "Germany"]
+  },
+  {
+    "location": "Paris Office – France",
+    "synonyms": ["Paris", "France"]
+  },
+  {
+    "location": "Rotterdam Office – Netherlands",
+    "synonyms": ["Rotterdam", "Netherlands", "Holland"]
+  },
+  {
+    "location": "Barcelona Office – Spain",
+    "synonyms": ["Barcelona", "Spain"]
+  }
+]
