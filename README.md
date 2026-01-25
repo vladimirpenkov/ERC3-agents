@@ -15,13 +15,14 @@ Agent for [ERC3 (Enterprise Reasoning Challenge 3)](https://www.timetoact-group.
 
 **Target:** 90% accuracy, ≤10 sec avg per LLM call, ≤$1 per 103 tasks.
 
-| Mode                   | Accuracy  | Cost (OpenRouter)   |
-|------------------------|-----------|---------------------|
-| Default                | up to 88% | $0.24 per 103 tasks |
-| With partial reasoning | up to 95% | $0.40 per 103 tasks |
+| Mode                   | Accuracy  | Cost (OpenRouter, appr.) |
+|------------------------|-----------|--------------------------|
+| Default                | up to 88% | $0.24 per 103 tasks      |
+| With partial reasoning | up to 95% | $0.40 per 103 tasks      |
 
+Default: You can use the grok-4-fast and/or grok-4.1-fast models with roughly similar results for each agent (MODEL_ID in agents/<agent>/agent_cfg.py)
 
-**About the +7% boost:**
+**About the +7% boost and "partial reasoning":**
 
 The list of "complex" tasks in `agents/solver/agent_cfg.py` is derived from historical statistics across multiple sessions — knowledge that cannot be obtained from a single run. This demonstrates the *potential* of the approach rather than a fair single-run benchmark result of non-reasoning cheap model.
 
@@ -100,7 +101,28 @@ agents/<name>/
 └── wiki/                # Company wiki data and indexes
 ```
 
-**Pipeline:** `entity_extractor → watchdog → solver`
+**Pipeline:** `entity_extractor → watchdog → solver` for the employee's request or just `guest_handler` for the guests.
+
+## Roadmap (Next Development Stage)
+
+The next development stage focuses on making the agent pipeline **faster, cheaper, and more predictable**, while preparing the system for a **local model migration**.
+
+### 1) Reduce the number of LLM calls
+- Move part of the NER workload to **matching-based algorithms**, using the LLM only as a fallback.
+- Extend **SGR** to allow the LLM to explicitly point to the field that contains the final answer in the tool-call result (e.g. `result.summary`). This removes an extra “read + rewrite” LLM pass in many cases.
+
+### 2) Reduce token usage
+- Make the tool list **dynamic**: provide the agent only with tools relevant to the current task.
+- Use a **dynamic prompt** as well: keep only the minimal required context and instructions for the given scenario.
+
+### 3) Reduce end-to-end latency
+- Run **safety-checks and execution in parallel** when applicable (speculative execution).
+
+### 4) Migrate to a local model
+- Prepare the architecture and routing logic for switching inference to a **local LLM** without quality regressions.
+
+**Expected impact:** fewer LLM calls, lower token usage, reduced latency, and a smooth path to local inference.
+
 
 ## Resources
 

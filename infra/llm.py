@@ -39,6 +39,7 @@ class TokenUsage:
     total: int = 0
     cached_tokens: int = 0
     cost: float = 0.0  # Cost in credits (OpenRouter)
+    duration_sec: float = 0.0  # Wall-clock time for LLM call (network + inference)
 
     def add(self, other: "TokenUsage") -> None:
         """Add usage from another TokenUsage instance."""
@@ -47,6 +48,7 @@ class TokenUsage:
         self.total += other.total
         self.cached_tokens += other.cached_tokens
         self.cost += other.cost
+        self.duration_sec += other.duration_sec
 
 
 @dataclass
@@ -260,6 +262,10 @@ def llm_call(
                 }
                 safe_file_append(raw_log_file, json.dumps(raw_entry, ensure_ascii=False, default=str) + "\n")
 
+            # Get raw content and measure duration
+            raw_content = completion.choices[0].message.content
+            duration_sec = time.perf_counter() - started
+
             # Extract usage and cost
             usage = TokenUsage()
             cached_prompt_tokens = 0
@@ -279,14 +285,11 @@ def llm_call(
                     total=completion.usage.total_tokens,
                     cached_tokens=cached_prompt_tokens,
                     cost=cost,
+                    duration_sec=duration_sec,
                 )
 
             # Accumulate for task-level tracking
             _accumulate_usage(model_id, usage)
-
-            # Get raw content
-            raw_content = completion.choices[0].message.content
-            duration_sec = time.perf_counter() - started
 
             # DEBUG: timing after each LLM call
             usage_dict = completion.usage.model_dump() if completion.usage and hasattr(completion.usage, 'model_dump') else {}

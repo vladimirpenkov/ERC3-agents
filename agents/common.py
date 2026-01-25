@@ -193,6 +193,7 @@ def run_agent(
         "total": sum(u.total for u in usage_before.values()),
         "cached": sum(u.cached_tokens for u in usage_before.values()),
         "cost": sum(u.cost for u in usage_before.values()),
+        "duration": sum(u.duration_sec for u in usage_before.values()),
     }
 
     started_at = time.perf_counter()
@@ -217,6 +218,7 @@ def run_agent(
             "total": sum(u.total for u in usage_after.values()),
             "cached": sum(u.cached_tokens for u in usage_after.values()),
             "cost": sum(u.cost for u in usage_after.values()),
+            "duration": sum(u.duration_sec for u in usage_after.values()),
         }
 
         tokens_prompt = totals_after["prompt"] - totals_before["prompt"]
@@ -224,13 +226,14 @@ def run_agent(
         tokens_total = totals_after["total"] - totals_before["total"]
         tokens_cached = totals_after["cached"] - totals_before["cached"]
         cost_delta = totals_after["cost"] - totals_before["cost"]
+        duration_delta = totals_after["duration"] - totals_before["duration"]
 
         # Record metrics
         context.agents[agent_name] = AgentRun(
             agent=agent_name,
             started_at=started_at,
             ended_at=ended_at,
-            duration_sec=ended_at - started_at,
+            duration_sec=duration_delta,
             model_id=model_id,
             tokens_prompt=tokens_prompt,
             tokens_completion=tokens_completion,
@@ -242,8 +245,7 @@ def run_agent(
         )
 
         # Debug output with proper indent
-        duration = ended_at - started_at
         cost_str = f"${cost_delta:.4f}" if cost_delta > 0 else "-"
         cached_str = f" (cached:{tokens_cached})" if tokens_cached > 0 else ""
         indent_str = " " * context.indent
-        print(f"{indent_str}\x1B[90m[{agent_name}] {duration:.1f}s | {tokens_total}tok{cached_str} | {cost_str}\x1B[0m")
+        print(f"{indent_str}\x1B[90m[{agent_name}] {duration_delta:.1f}s | {tokens_total}tok{cached_str} | {cost_str}\x1B[0m")
