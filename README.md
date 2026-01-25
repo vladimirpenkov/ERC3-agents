@@ -28,6 +28,11 @@ The list of "complex" tasks in `agents/solver/agent_cfg.py` is derived from hist
 
 The "stronger" model is the same grok-4.1-fast with `"extra_body": {"reasoning": {"enabled": True}}`. It runs slower but provides significant accuracy gains on tasks that require deeper reasoning.
 
+## Current leaderboard results
+
+Up-to-date benchmark results are available here:
+https://erc.timetoact-group.at/benchmarks/erc3-prod
+
 ## Requirements
 
 - Python 3.11+
