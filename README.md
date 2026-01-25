@@ -1,6 +1,6 @@
 # ERC32 Agent
 
-Agent for [ERC3 (Enterprise Reasoning Challenge 3)](https://www.timetoact-group.at/events/enterprise-rag-challenge-part-3) — HR/PM benchmark tasks: employees, projects, wiki, security policies.
+Agent for [ERC3 (Enterprise Reasoning Challenge 3)](https://www.timetoact-group.at/events/enterprise-rag-challenge-part-3) — a crowdsourced research project exploring how agentic AI can solve real-world business challenges.
 
 ## Approach
 
@@ -8,19 +8,19 @@ Agent for [ERC3 (Enterprise Reasoning Challenge 3)](https://www.timetoact-group.
 
 - **SGR (Schema-Guided Reasoning)** — LLM outputs constrained to valid tool calls via Pydantic schemas and OpenAI structured outputs
 - **Named Entity Recognition** — entity_extractor agent resolves mentions like "John's manager" or "Project Alpha" to concrete IDs before task execution
-- **Non-reasoning models** — optimized for speed and cost using smaller models (gpt-4o-mini, gemini-flash) with structured outputs instead of chain-of-thought
+- **Non-reasoning models** — optimized for speed and cost using smaller models (grok-4-fast, grok-4.1-fast) with structured outputs instead of chain-of-thought
 - **Multi-agent pipeline** — separation of concerns: entity resolution → security check → task execution
 
 ## Results
 
 **Target:** 90% accuracy, ≤10 sec median per task, ≤$1 per 103 tasks.
 
-| Mode                   | Accuracy  | Cost (OpenRouter)     | Time, s         |
-|------------------------|-----------|-----------------------|-----------------|
-| Default                | up to 88% | ~ $0.25 per 103 tasks | 8.5 per task    |
-| With partial reasoning | up to 95% | ~ $0.35 per 103 tasks | 10.5 per task   |
+| Mode                   | Accuracy      | Cost (OpenRouter)         | Time, s          |
+|------------------------|---------------|---------------------------|------------------|
+| **Default**            | **up to 88%** | **~ $0.25 per 103 tasks** | **8.5 per task** |
+| With partial reasoning | up to 95%     | ~ $0.35 per 103 tasks     | 10.5 per task    |
 
-Default: You can use the grok-4-fast and/or grok-4.1-fast models with roughly similar results for each agent (MODEL_ID in agents/<agent>/agent_cfg.py)
+**Default:** You can use the `grok-4-fast` and/or `grok-4.1-fast` models with roughly similar results for the agents (MODEL_ID in `agents/<agent>/agent_cfg.py`)
 
 **About the +7% boost and "partial reasoning":**
 
