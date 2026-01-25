@@ -13,12 +13,12 @@ Agent for [ERC3 (Enterprise Reasoning Challenge 3)](https://www.timetoact-group.
 
 ## Results
 
-**Target:** 90% accuracy, ≤10 sec avg per LLM call, ≤$1 per 103 tasks.
+**Target:** 90% accuracy, ≤10 sec median per task, ≤$1 per 103 tasks.
 
-| Mode                   | Accuracy  | Cost (OpenRouter, appr.) |
-|------------------------|-----------|--------------------------|
-| Default                | up to 88% | $0.24 per 103 tasks      |
-| With partial reasoning | up to 95% | $0.40 per 103 tasks      |
+| Mode                   | Accuracy  | Cost (OpenRouter)     | Time, s         |
+|------------------------|-----------|-----------------------|-----------------|
+| Default                | up to 88% | ~ $0.25 per 103 tasks | 8.5 per task    |
+| With partial reasoning | up to 95% | ~ $0.35 per 103 tasks | 10.5 per task   |
 
 Default: You can use the grok-4-fast and/or grok-4.1-fast models with roughly similar results for each agent (MODEL_ID in agents/<agent>/agent_cfg.py)
 
@@ -102,6 +102,7 @@ agents/<name>/
 ```
 
 **Pipeline:** `entity_extractor → watchdog → solver` for the employee's request or just `guest_handler` for the guests.
+
 
 ## Roadmap (Next Development Stage)
 
