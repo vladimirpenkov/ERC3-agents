@@ -1,11 +1,11 @@
-"""Configuration for ERC32 Agent"""
+"""Configuration for ERC3 Agent"""
 
 from typing import List
 from pydantic import BaseModel
 
 
 class AgentConfig(BaseModel):
-    """Configuration for the ERC32 agent."""
+    """Configuration for the ERC3 agent."""
 
     # Session parameters (for core.start_session)
     benchmark: str = "erc3-prod"

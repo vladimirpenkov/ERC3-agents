@@ -1,4 +1,4 @@
-# ERC32 Agent
+# ERC3 Agent
 
 Agent for [ERC3 (Enterprise Reasoning Challenge 3)](https://www.timetoact-group.at/events/enterprise-rag-challenge-part-3) — a crowdsourced research project exploring how agentic AI can solve real-world business challenges.
 
@@ -15,10 +15,10 @@ Agent for [ERC3 (Enterprise Reasoning Challenge 3)](https://www.timetoact-group.
 
 **Target:** 90% accuracy, ≤10 sec median per task, ≤$1 per 103 tasks.
 
-| Mode                   | Accuracy      | Cost (OpenRouter)         | Time, s          |
-|------------------------|---------------|---------------------------|------------------|
-| **Default**            | **up to 88%** | **~ $0.25 per 103 tasks** | **8.5 per task** |
-| With partial reasoning | up to 95%     | ~ $0.35 per 103 tasks     | 10.5 per task    |
+| Mode                   | Accuracy      | Cost (OpenRouter)     | Time, s      |
+|------------------------|---------------|-----------------------|--------------|
+| **Default**            | **up to 88%** | ~ $0.25 per 103 tasks | 8.5 per task |
+| With partial reasoning | up to 95%     | ~ $0.35 per 103 tasks | 10.5 per task |
 
 **Default:** You can use the `grok-4-fast` and/or `grok-4.1-fast` models with roughly similar results for the agents (MODEL_ID in `agents/<agent>/agent_cfg.py`)
 
@@ -45,8 +45,11 @@ https://erc.timetoact-group.at/benchmarks/erc3-prod
 ```bash
 cp .env.example .env       # then fill in your API keys
 pip install -r requirements.txt
-./scripts/setup.sh         # downloads embedding model, indexes wiki
+./scripts/setup.sh         # downloads embedding model "BAAI/bge-small-en-v1.5", indexes wiki
 ```
+
+> If you don't have an ERC3 platform key and have no way to obtain one, feel free to reach out:
+> **Email:** vladimir.v.penkov@gmail.com | **Telegram:** @vladmr
 
 ## Usage
 
@@ -63,7 +66,7 @@ Project settings in `config.py`:
 | Parameter | Description                                                         |
 |-----------|---------------------------------------------------------------------|
 | `task_codes` | Run only specific tasks by spec_id (empty = all tasks)              |
-| `task_name_filter` | Run tasks containing substring in text                              |
+| `task_name_filter` | Run only tasks containing substring in text                         |
 | `data_dump` | Download API data before each task for debugging (can take a while) |
 | `policy_rulebook` | Security rules file in `data/`                                      |
 

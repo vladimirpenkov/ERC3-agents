@@ -224,9 +224,9 @@ The entity extractor could not find database matches for the following terms:
         {"role": "user", "content": user_message},
     ]
 
-    # Log initial context - EVERYTHING that r2d2 receives
+    # Log initial context - EVERYTHING that solver receives
     write_json_event(log_file, {
-        "role": "r2d2",
+        "role": "solver",
         "type": "context_start",
         "system_prompt": system_prompt,
         "user_message": user_message,
@@ -270,7 +270,7 @@ The entity extractor could not find database matches for the following terms:
                 return finalize_task(api, task, config, "rate_limit_exhausted", task_started)
             print(f"{CLI_RED}LLM_ERROR{CLI_CLR}: {llm_result.error}")
             write_json_event(log_file, {
-                "role": "r2d2",
+                "role": "solver",
                 "type": "step",
                 "step_num": i + 1,
                 "error": {"type": "llm_error", "error": llm_result.error},
@@ -510,7 +510,7 @@ The entity extractor could not find database matches for the following terms:
 
         # Log step event
         write_json_event(log_file, {
-            "role": "r2d2",
+            "role": "solver",
             "type": "step",
             "step_num": i + 1,
             "prev_err": job.previous_step_error_if_exists,

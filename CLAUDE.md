@@ -1,10 +1,19 @@
 # SGR Store Agent
 
-## Приоритет инструкций
+## Language Policy
 
-- Конкретная инструкция (из команды, задачи, workflow) имеет приоритет над общими принципами
-- Если буквальное выполнение кажется вредным — спроси, а не интерпретируй
-- Отступление от инструкции требует явного согласования
+- **This file (CLAUDE.md) is in English only.** All additions and edits must be in English.
+- **The working language of Claude Code is English by default.**
+- If the user writes in Russian (or any other language) — translate the message to English internally and process, reason, and respond in English.
+- Translate responses to Russian **only** if the user explicitly requests it.
+
+---
+
+## Instruction Priority
+
+- A specific instruction (from a command, task, or workflow) takes priority over general principles
+- If literal execution seems harmful — ask, don't interpret
+- Deviating from an instruction requires explicit agreement
 
 ---
 
@@ -106,25 +115,14 @@ Instead of refusing silently, explain why and propose a safer alternative.
 **ERC3** (Enterprise Reasoning Challenge 3) — benchmark platform for evaluating AI agents on business tasks.
 
 **Benchmarks:**
-- **Store** (`sgr-agent-store/`) — online store simulation: find products, apply coupons, optimize purchases, checkout
-- **ERC32** (this project) — enterprise HR/project management: time entries, project queries, employee data, security policies
+- **ERC3** (this project) — enterprise HR/project management: time entries, project queries, employee data, security policies
 
 **SGR (Schema-Guided Reasoning)** — approach using OpenAI structured outputs to constrain agent responses to valid tool calls via Pydantic schemas.
 
 ## Architecture
 
-### Store Agent
-```
-sgr-agent-store/
-├── main.py              # Entry point: starts session, iterates tasks
-├── store_agent.py       # Agent loop: LLM → parse → dispatch → log
-├── config.py            # AgentConfig: model, prompts, timeouts
-└── tools/
-    ├── dtos.py          # Pydantic schemas (Combo_*, TaskCompletion, etc.)
-    └── wrappers.py      # Tool implementations
-```
 
-### ERC32 Agent
+### ERC3 Agent
 ```
 ./
 ├── main.py              # Entry point: starts session, iterates tasks
@@ -472,10 +470,10 @@ Unified tool for completing tasks with three action types:
 
 ## API Error Handling Pattern
 
-### Принцип: обработка по месту возникновения
-При возникновении серверной ошибки API (не 404) — сразу логировать и отправлять завершение задачи.
+### Principle: handle errors at the point of occurrence
+On a server API error (not 404) — immediately log and send task completion.
 
-### Компоненты
+### Components
 
 **`infra/core.py`:**
 ```python
@@ -489,38 +487,38 @@ def handle_api_error(e, method, store_api, log_file, core=None, task=None) -> No
     # Other errors: log, send response, raise TaskTerminated
 ```
 
-### Использование
+### Usage
 
 ```python
 from infra import handle_api_error, TaskTerminated
 
-# В любом месте с API вызовами:
+# At any point with API calls:
 try:
     result = api.dispatch(SomeRequest(...))
 except ApiException as e:
     handle_api_error(e, "SomeRequest", store_api, log_file, core, task)
-    # Если дошли сюда — это 404, продолжаем
+    # If we got here — it's a 404, continue
     result = None
 
-# На верхнем уровне (main.py):
+# At the top level (main.py):
 try:
     result = run_agent("watchdog", watchdog.run, context)
 except TaskTerminated as e:
     finalize_task(context, "server_error")
 ```
 
-### Логирование
+### Logging
 
-При server error автоматически пишутся два события:
+On a server error, two events are automatically written:
 ```json
 {"role": "system", "type": "api_error", "status": 500, "method": "GetProject", "error": "..."}
 {"role": "system", "type": "task_end", "reason": "server_error", ...}
 ```
 
-### Важно
-- `store_api` должен передаваться через `TaskContext` во все компоненты
-- 404 ошибки — нормальная ситуация (not found), не прерывают выполнение
-- Server errors (5xx, 4xx кроме 404) — немедленное завершение задачи
+### Important
+- `store_api` must be passed via `TaskContext` to all components
+- 404 errors are a normal situation (not found) — they do not interrupt execution
+- Server errors (5xx, 4xx except 404) — immediate task termination
 
 ---
 
@@ -536,7 +534,7 @@ except TaskTerminated as e:
 | **guest_handler** | Handles public (non-employee) requests |
 | **imp** | Simple LLM tasks (translation, formatting) |
 
-### Ключевые файлы
+### Key Files
 
 ```
 ./
@@ -554,5 +552,5 @@ except TaskTerminated as e:
 
 ### Decision Criteria
 
-**Для EMPLOYEES (is_public=false):** PERMISSIVE — что не запрещено, то разрешено
-**Для GUESTS (is_public=true):** RESTRICTIVE — только явно разрешённые действия
+**For EMPLOYEES (is_public=false):** PERMISSIVE — anything not explicitly forbidden is allowed
+**For GUESTS (is_public=true):** RESTRICTIVE — only explicitly allowed actions
